@@ -1,0 +1,655 @@
+backend:
+  name: git-gateway
+  accept_roles:
+    - admin
+    - editor
+media_folder: theme/assets/images
+public_folder: /assets/images
+collections:
+  - name: pages
+    label: Pages
+    identifier_field: title
+    extension: md
+    create: false
+    delete: false
+    slug: '{{slug}}'
+    editor:
+      preview: false
+    folder: cms/pages
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Publish Date
+        name: date
+        widget: datetime
+      - label: Layout
+        widget: hidden
+        name: layout
+        default: '{{slug}}.html'
+      - &ref_0
+        label: Seo
+        name: seo
+        widget: object
+        collapsed: true
+        fields:
+          - label: Title
+            name: title
+            widget: string
+            required: false
+          - label: Description
+            name: description
+            widget: string
+            required: false
+          - label: No index
+            name: noindex
+            widget: boolean
+            default: false
+            required: false
+          - label: Open Graph Title
+            name: og:title
+            widget: string
+            required: false
+          - label: Open Graph Image
+            name: og:image
+            widget: image
+            required: false
+            media_library:
+              config:
+                multiple: false
+          - label: Twitter Title
+            name: twitter:title
+            widget: string
+            default: summary
+            required: false
+          - label: Twitter Card
+            name: twitter:card
+            widget: string
+            default: summary
+            required: false
+          - label: Twitter Site
+            name: twitter:site
+            widget: string
+            required: false
+          - label: Twitter Creator
+            name: twitter:creator
+            widget: string
+            required: false
+          - label: Additional HTML tags
+            name: additional_tags
+            widget: text
+            required: false
+  - name: category
+    label: Categories
+    folder: cms/category
+    create: true
+    identifier_field: name
+    extension: md
+    slug: '{{slug}}'
+    fields:
+      - hint: ''
+        name: title
+        label: Name
+        widget: string
+        required: true
+      - hint: ''
+        name: created-on
+        label: Created On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: updated-on
+        label: Updated On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: published-on
+        label: Published On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: f_description
+        label: Description
+        widget: text
+        required: false
+      - label: Tags
+        widget: hidden
+        name: tags
+        default: category
+      - label: Layout
+        widget: hidden
+        name: layout
+        default: '[category].html'
+      - label: Publish Date
+        name: date
+        widget: datetime
+      - *ref_0
+  - name: post
+    label: Blog Posts
+    folder: cms/post
+    create: true
+    identifier_field: name
+    extension: md
+    slug: '{{slug}}'
+    fields:
+      - hint: ''
+        name: title
+        label: Name
+        widget: string
+        required: true
+      - hint: ''
+        name: created-on
+        label: Created On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: updated-on
+        label: Updated On
+        widget: datetime
+        required: false
+      - hint: ''
+        name: published-on
+        label: Published On
+        widget: datetime
+        required: false
+      - label: Post Body
+        name: body
+        widget: markdown
+        required: false
+      - hint: ''
+        name: f_price
+        label: Price
+        widget: string
+        required: false
+      - hint: ''
+        name: f_2nd-image
+        label: 2nd Image
+        widget: object
+        required: false
+        fields:
+          - hint: ''
+            name: url
+            label: Image
+            widget: image
+            required: false
+            allow_multiple: false
+          - hint: Image Alt
+            name: alt
+            label: alt
+            widget: string
+            required: false
+      - hint: ''
+        name: f_additional-images
+        label: Additional Images
+        widget: list
+        required: false
+        fields:
+          - hint: ''
+            name: url
+            label: Image
+            widget: image
+            required: false
+            allow_multiple: false
+          - hint: Image Alt
+            name: alt
+            label: alt
+            widget: string
+            required: false
+      - hint: ''
+        name: f_category
+        label: Category
+        widget: relation
+        required: false
+        collection: category
+        value_field: cms/category/{{slug}}.md
+        search_fields:
+          - slug
+          - name
+        display_fields:
+          - title
+        multiple: false
+      - hint: Smaller version of main image that is used on blog post grid
+        name: f_thumbnail-image
+        label: Thumbnail image
+        widget: object
+        required: false
+        fields:
+          - hint: ''
+            name: url
+            label: Image
+            widget: image
+            required: false
+            allow_multiple: false
+          - hint: Image Alt
+            name: alt
+            label: alt
+            widget: string
+            required: false
+      - hint: A summary of the blog post that appears on blog post grid
+        name: f_post-summary
+        label: Post Summary
+        widget: text
+        required: false
+      - hint: ''
+        name: f_featured
+        label: Featured?
+        widget: boolean
+        required: false
+      - hint: ''
+        name: f_buy-now
+        label: Buy Now
+        widget: string
+        required: false
+      - hint: ''
+        name: f_productmodal
+        label: productmodal
+        widget: markdown
+        required: false
+      - label: Tags
+        widget: hidden
+        name: tags
+        default: post
+      - label: Layout
+        widget: hidden
+        name: layout
+        default: '[post].html'
+      - label: Publish Date
+        name: date
+        widget: datetime
+      - *ref_0
+  - label: Theme Settings
+    name: settings
+    identifier_field: title
+    extension: json
+    create: false
+    delete: false
+    slug: '{{slug}}'
+    editor:
+      preview: false
+    files:
+      - label: General
+        name: site
+        file: cms/_data/settings/site.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: General
+          - hint: Full domain url (needed for a correct sitemap file)
+            name: domain
+            label: Domain
+            widget: string
+            required: false
+          - name: favicon
+            label: Favicon
+            widget: image
+            allow_multiple: false
+            required: false
+          - name: apple_touch_icon
+            label: Apple Touch Icon
+            widget: image
+            allow_multiple: false
+            required: false
+          - name: header_additional_content
+            label: Additional Content Header
+            hint: Content here will be placed before </head> tag
+            widget: text
+            required: false
+          - name: footer_additional_content
+            label: Additional Content Footer
+            hint: Content here will be placed before </body> tag
+            widget: text
+            required: false
+          - name: images_optimization
+            label: Images Optimization
+            widget: object
+            collapsed: false
+            fields:
+              - label: Image Formats
+                name: formats
+                widget: select
+                multiple: true
+                options:
+                  - label: Avif
+                    value: avif
+                  - label: Webp
+                    value: webp
+              - label: Image Dimensions
+                name: dimensions
+                widget: select
+                multiple: true
+                options:
+                  - label: '500'
+                    value: 500
+                  - label: '800'
+                    value: 800
+                  - label: '1080'
+                    value: 1080
+                  - label: '1600'
+                    value: 1600
+                  - label: '2000'
+                    value: 2000
+                  - label: '2600'
+                    value: 2600
+      - label: Colors
+        name: colors
+        file: cms/_data/colors.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: Colors
+      - label: Texts
+        name: texts
+        file: cms/_data/texts.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: Texts
+          - hint: 'Original text: HAGEN, key: 4153b97'
+            label: Text
+            name: 4153b97
+            widget: string
+          - hint: 'Original text: BLACK, key: 3c597df'
+            label: Text
+            name: 3c597df
+            widget: string
+          - hint: 'Original text: INTERIOR DESIGN, key: 3d39b22e'
+            label: Text
+            name: 3d39b22e
+            widget: string
+          - hint: 'Original text: Martha Hagen Black, key: -48a361b'
+            label: Text
+            name: '-48a361b'
+            widget: string
+          - hint: >-
+              Original text: I believe that every well designed space be a
+              thoughtful reflection of the people living in it, key: 1626bc97
+            label: Text
+            name: 1626bc97
+            widget: text
+          - hint: 'Original text: Contact us, key: 7f274abe'
+            label: Text
+            name: 7f274abe
+            widget: string
+          - hint: 'Original text: appointments, key: 5a9618b4'
+            label: Text
+            name: 5a9618b4
+            widget: string
+          - hint: 'Original text: –, key: 2013'
+            label: Text
+            name: '2013'
+            widget: string
+          - hint: 'Original text: No items found., key: 3d503d2b'
+            label: Text
+            name: 3d503d2b
+            widget: string
+          - hint: 'Original text: about us, key: 60849c11'
+            label: Text
+            name: 60849c11
+            widget: string
+          - hint: 'Original text: contact us, key: 8556e9e'
+            label: Text
+            name: 8556e9e
+            widget: string
+          - hint: 'Original text: unique products made for you, key: 35c23a6a'
+            label: Text
+            name: 35c23a6a
+            widget: string
+          - hint: 'Original text: design folio, key: fa18447'
+            label: Text
+            name: fa18447
+            widget: string
+          - hint: 'Original text: shop, key: 35daf6'
+            label: Text
+            name: 35daf6
+            widget: string
+          - hint: 'Original text: Follow Us, key: -5ae80293'
+            label: Text
+            name: '-5ae80293'
+            widget: string
+          - hint: "Original text: No two people are the same. Nor are any two places. Starting with the unique details of personality and place found in every environment, Martha believes every project, additionally, deserves a holistic and careful consideration of scale, balance, harmony and function. \_A space can be casual, luxurious, formal, or relaxed, but it should never feel precious. At the heart of Martha’s work is her belief that a home should always feel warm, engaging, and, above all, livable. , key: 5374afaa"
+            label: Text
+            name: 5374afaa
+            widget: text
+          - hint: "Original text: Martha’s interior design career began at one of Architectural Digest’s “Top 100” architecture and design firms, Deborah Berke Partners, in New York City. While there, she was involved in the design of a diverse range of projects from towering penthouses and urban brownstones to upstate country andocean front beach homes.\_, key: -29e8e4"
+            label: Text
+            name: '-29e8e4'
+            widget: text
+          - hint: >-
+              Original text: Before transitioning to interiors, Martha worked in
+              the fashion industry as an editorial style assistant and
+              accessories editor at Elle and Cosmopolitan magazines, and then as
+              a wardrobe and prop stylist for film, television, and commercials.
+              , key: 1f4be94f
+            label: Text
+            name: 1f4be94f
+            widget: text
+          - hint: >-
+              Original text: She is a graduate with high honors of the New York
+              School of Interior Design, and received a degree in Literature
+              from American University in Washington DC. Though her education
+              contributed to her knowledge of design, it is the many places she
+              has called home that have had the greatest impact on her design
+              philosophy. From a childhood spent in heavily Scandinavian
+              influenced Minnesota to the Federal period of Washington D.C.;
+              from the “Old World” charm of Paris to the modernity of New York
+              City; from the beaches and sunshine of Southern California, to the
+              idyllic countryside of Connecticut, and currently, the early
+              American style of historic Savannah, GA, Martha has a deep
+              appreciation for what it means to live in harmony with a place and
+              the things you love. , key: -747b1071
+            label: Text
+            name: '-747b1071'
+            widget: text
+          - hint: 'Original text: Contact Us, key: 7f2746de'
+            label: Text
+            name: 7f2746de
+            widget: string
+          - hint: 'Original text: Name, key: 24eeab'
+            label: Text
+            name: 24eeab
+            widget: string
+          - hint: 'Original text: Email Address, key: -2b7010d0'
+            label: Text
+            name: '-2b7010d0'
+            widget: string
+          - hint: 'Original text: Message, key: -63dc6819'
+            label: Text
+            name: '-63dc6819'
+            widget: string
+          - hint: >-
+              Original text: Thank you! Your submission has been received!, key:
+              5a0ea5a1
+            label: Text
+            name: 5a0ea5a1
+            widget: string
+          - hint: >-
+              Original text: Oops! Something went wrong while submitting the
+              form., key: -7c112e99
+            label: Text
+            name: '-7c112e99'
+            widget: string
+          - hint: 'Original text: work with our expert team, key: 6c9e2614'
+            label: Text
+            name: 6c9e2614
+            widget: string
+          - hint: 'Original text: custom design, key: 269d0d4d'
+            label: Text
+            name: 269d0d4d
+            widget: string
+          - hint: 'Original text: make an appointment, key: -5293df62'
+            label: Text
+            name: '-5293df62'
+            widget: string
+          - hint: 'Original text: INTERIORS, key: -3bf0ef5d'
+            label: Text
+            name: '-3bf0ef5d'
+            widget: string
+          - hint: >-
+              Original text: we believe that every well designed space be a
+              thoughtful reflection of the people living in it, key: -782bbfce
+            label: Text
+            name: '-782bbfce'
+            widget: text
+          - hint: 'Original text: Buy Now, key: 71bb21fc'
+            label: Text
+            name: 71bb21fc
+            widget: string
+          - hint: 'Original text: instagram, key: 1b907b2'
+            label: Text
+            name: 1b907b2
+            widget: string
+          - hint: 'Original text: good things are on the way, key: -7d0f781d'
+            label: Text
+            name: '-7d0f781d'
+            widget: string
+      - label: Links
+        name: links
+        file: cms/_data/links.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: Links
+          - hint: 'Original link: /about, key: 55b8e8be'
+            label: Link
+            name: 55b8e8be
+            widget: string
+          - hint: 'Original link: #tutorial, key: 50e05881'
+            label: Link
+            name: '50e05881'
+            widget: string
+          - hint: >-
+              Original link:
+              https://webflow.com/website/Free-Grid-Design-Template, key:
+              -78bd667a
+            label: Link
+            name: '-78bd667a'
+            widget: string
+          - hint: 'Original link: https://webflow-lernen.de/tutorials, key: -78901423'
+            label: Link
+            name: '-78901423'
+            widget: string
+          - hint: 'Original link: #, key: 23'
+            label: Link
+            name: '23'
+            widget: string
+          - hint: 'Original link: /, key: 2f'
+            label: Link
+            name: 2f
+            widget: string
+      - label: Images
+        name: images
+        file: cms/_data/images.json
+        fields:
+          - label: Title
+            name: title
+            widget: hidden
+            default: Images
+          - label: Image
+            name: 65637ba5
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
+          - label: Image
+            name: a123b68
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
+          - label: Image
+            name: '-1f79531f'
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
+          - label: Image
+            name: 6614f82
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
+          - label: Image
+            name: 246f5c
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
+          - label: Image
+            name: 39a6ddfd
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
+          - label: Image
+            name: 29c93051
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
+          - label: Image
+            name: '-1ec359c0'
+            widget: object
+            fields:
+              - name: url
+                label: Image Url
+                widget: image
+                allow_multiple: false
+                required: false
+              - name: alt
+                label: Image Alt
+                widget: string
+                required: false
+publish_mode: editorial_workflow
